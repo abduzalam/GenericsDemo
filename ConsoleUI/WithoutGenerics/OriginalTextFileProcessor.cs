@@ -58,6 +58,31 @@ namespace ConsoleUI.WithoutGenerics
             return output;
         }
 
+        public static List<LogEntry> LoadLogs(string filePath)
+        {
+            List<LogEntry> output = new List<LogEntry>();
+            LogEntry l;
+            var lines = File.ReadAllLines(filePath).ToList();
+
+            //Remove the header row
+
+            lines.RemoveAt(0);
+
+            foreach (var line in lines)
+            {
+                var vals = line.Split(',');
+                l = new LogEntry();
+
+                l.ErrorCode = int.Parse(vals[0]);
+                l.Message = vals[1];
+                l.TimeOfEvent = DateTime.Parse(vals[2]);
+
+                output.Add(l);
+            }
+            return output;
+        }
+
+
         public static void SavePeople(List<Person> people,string filePath)
         {
             List<string> lines = new List<string>();
@@ -71,5 +96,20 @@ namespace ConsoleUI.WithoutGenerics
             }
             File.WriteAllLines(filePath,lines);
         }
+
+        public static void SaveLogs(List<LogEntry> logs, string filePath)
+        {
+            List<string> lines = new List<string>();
+
+            //Add header row
+            lines.Add("ErrorCode,Message,TimeOfEvent");
+
+            foreach (var l in logs)
+            {
+                lines.Add($"{l.ErrorCode},{l.Message},{l.TimeOfEvent}");
+            }
+            File.WriteAllLines(filePath, lines);
+        }
+
     }
 }
